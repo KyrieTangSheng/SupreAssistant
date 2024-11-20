@@ -282,6 +282,206 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Create Companion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response has companion data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('companion');",
+							"    pm.expect(jsonData.companion).to.have.property('name');",
+							"    pm.expect(jsonData.companion).to.have.property('description');",
+							"    pm.expect(jsonData.companion).to.have.property('instructions');",
+							"",
+							"    // Store companion ID for other tests",
+							"    pm.environment.set(\"companionId\", jsonData.companion.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Study Buddy\",\n    \"description\": \"Your personal study assistant\",\n    \"instructions\": \"I am a study companion that helps with academic tasks\",\n    \"categoryId\": \"study\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companions",
+					"host": ["{{baseUrl}}"],
+					"path": ["companions"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Companions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has companions array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('companions');",
+							"    pm.expect(jsonData.companions).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/companions",
+					"host": ["{{baseUrl}}"],
+					"path": ["companions"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Companion by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has companion data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('companion');",
+							"    pm.expect(jsonData.companion).to.have.property('id');",
+							"    pm.expect(jsonData.companion).to.have.property('name');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/companions/{{companionId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["companions", "{{companionId}}"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Companion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Companion was updated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.companion.name).to.equal('Updated Study Buddy');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Updated Study Buddy\",\n    \"description\": \"Your enhanced study assistant\",\n    \"instructions\": \"I am an improved study companion that helps with academic tasks\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companions/{{companionId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["companions", "{{companionId}}"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Companion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/companions/{{companionId}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["companions", "{{companionId}}"]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
@@ -301,6 +501,11 @@
 		},
 		{
 			"key": "eventId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "companionId",
 			"value": "",
 			"type": "default"
 		}

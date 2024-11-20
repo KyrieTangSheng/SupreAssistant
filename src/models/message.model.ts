@@ -19,11 +19,13 @@ Message.init(
     },
     companionId: {
       type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: Companion,
-        key: 'id'
-      }
+      allowNull: false
+      // references: {
+      //   model: 'companions',
+      //   key: 'id'
+      // },
+      // onDelete: 'CASCADE',
+      // onUpdate: 'CASCADE'
     },
     content: {
       type: DataTypes.TEXT,
@@ -36,6 +38,9 @@ Message.init(
   },
   {
     sequelize,
-    tableName: 'messages'
+    tableName: 'messages',
+    indexes: [
+      { fields: ['companionId'], name: 'messages_companion_id_index' }
+    ]
   }
 ); 

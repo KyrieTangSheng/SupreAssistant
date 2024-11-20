@@ -43,10 +43,19 @@ Event.init(
     userId: {
       type: DataTypes.UUID,
       allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id'
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
   },
   {
     sequelize,
     tableName: 'events',
+    indexes: [
+      { fields: ['userId'], name: 'events_user_id_index' }
+    ]
   }
 ); 

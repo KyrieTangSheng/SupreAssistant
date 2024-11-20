@@ -1,7 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../config/db.config';
-import { User } from './user.model';
-import { Message } from './message.model';
 
 export class Companion extends Model {
   public id!: string;
@@ -24,11 +22,12 @@ Companion.init(
     userId: {
       type: DataTypes.UUID,
       allowNull: false,
-      unique: true,
       references: {
-        model: User,
+        model: 'users',
         key: 'id'
-      }
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     },
     name: {
       type: DataTypes.STRING,
@@ -38,12 +37,12 @@ Companion.init(
     model: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'gpt-4' // TODO: Change model
+      defaultValue: process.env.OPENAI_MODEL_NAME
     },
     systemPrompt: {
       type: DataTypes.TEXT,
       allowNull: false,
-      defaultValue: 'You are a helpful AI assistant.' // TODO: Change system prompt
+      defaultValue: 'You are a helpful AI assistant.'
     },
     lastInteractionAt: {
       type: DataTypes.DATE,
@@ -53,6 +52,6 @@ Companion.init(
   },
   {
     sequelize,
-    tableName: 'companions'
+    tableName: 'companions',
   }
 ); 

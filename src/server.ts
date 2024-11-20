@@ -15,4 +15,10 @@ const startServer = async () => {
   }
 };
 
+// Make sure all models are imported before starting
+import './models/user.model';
+import './models/companion.model';
+import './models/message.model';
+import './models/event.model';
+
 startServer(); 

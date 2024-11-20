@@ -12,5 +12,5 @@ app.use(express.urlencoded({ extended: true }));
 // Mount the routes
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
-app.use('/api/companion', companionRoutes);
+app.use('/api/companions', companionRoutes);
 export default app; 

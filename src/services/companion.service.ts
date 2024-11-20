@@ -1,13 +1,15 @@
 import { Companion } from '../models/companion.model';
 import { Message } from '../models/message.model';
 import { OpenAIProvider } from './llm/openai.service';
+import { GoogleProvider } from './llm/google.service';
 import { DatabaseError, NotFoundError } from '../utils/errors';
 
 export class CompanionService {
-  private llmProvider: OpenAIProvider;
+  private llmProvider: OpenAIProvider | GoogleProvider;
 
   constructor() {
-    this.llmProvider = new OpenAIProvider();
+    // this.llmProvider = new OpenAIProvider(); 
+    this.llmProvider = new GoogleProvider();
   }
 
   async getOrCreateCompanion(userId: string): Promise<Companion> {
@@ -35,7 +37,7 @@ export class CompanionService {
         limit: 10
       });
 
-      // Format messages for OpenAI
+      // Format messages for OpenAI or Google LLM
       const messages = [
         { role: 'system', content: companion.systemPrompt },
         ...recentMessages.reverse().map(m => ({

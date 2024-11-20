@@ -15,6 +15,7 @@
   "author": "KyrieTangSheng",
   "license": "MIT",
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^11.5.0",
