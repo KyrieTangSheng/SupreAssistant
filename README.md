@@ -53,3 +53,17 @@ An intelligent application designed to help users manage their time and schedule
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Environment Setup
+
+1. Copy `.env.example` to create your own `.env` file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Update the `.env` file with your actual values:
+   - Generate a secure `JWT_SECRET`
+   - Add your AI provider API keys
+   - Configure other environment-specific values
+
+3. Never commit the `.env` file to version control
