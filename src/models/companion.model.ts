@@ -42,7 +42,7 @@ Companion.init(
     systemPrompt: {
       type: DataTypes.TEXT,
       allowNull: false,
-      defaultValue: process.env.COMPANION_SYSTEM_PROMPT || 'You are a helpful assistant.'
+      defaultValue: process.env.COMPANION_SYSTEM_PROMPT_PATH ? require('fs').readFileSync(process.env.COMPANION_SYSTEM_PROMPT_PATH, 'utf8') : 'You are a helpful assistant.'
     },
     lastInteractionAt: {
       type: DataTypes.DATE,
