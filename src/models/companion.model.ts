@@ -22,12 +22,12 @@ Companion.init(
     userId: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: 'users',
-        key: 'id'
-      },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      // references: {
+      //   model: 'users',
+      //   key: 'id'
+      // },
+      // onDelete: 'CASCADE',
+      // onUpdate: 'CASCADE'
     },
     name: {
       type: DataTypes.STRING,
@@ -37,12 +37,12 @@ Companion.init(
     model: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: process.env.OPENAI_MODEL_NAME
+      defaultValue: process.env.OPENAI_MODEL_NAME || 'gpt-4o'
     },
     systemPrompt: {
       type: DataTypes.TEXT,
       allowNull: false,
-      defaultValue: 'You are a helpful AI assistant.'
+      defaultValue: process.env.COMPANION_SYSTEM_PROMPT || 'You are a helpful assistant.'
     },
     lastInteractionAt: {
       type: DataTypes.DATE,

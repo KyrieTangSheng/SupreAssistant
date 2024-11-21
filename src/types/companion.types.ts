@@ -1,3 +1,5 @@
+import { CreateEventData } from "./event.types";
+
 export interface AICompanion{
     id: string;
     userId: string;
@@ -28,3 +30,9 @@ export interface Memory {
     lastAccessed: Date;
     createdAt: Date;
 } 
+
+export interface AIResponse{
+  intent: string;
+  content: string;
+  event?: CreateEventData;
+}

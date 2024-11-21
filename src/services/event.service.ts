@@ -1,7 +1,7 @@
+import { Op } from 'sequelize';
 import { Event } from '../models/event.model';
 import { CreateEventData, UpdateEventData } from '../types/event.types';
 import { DatabaseError, NotFoundError } from '../utils/errors';
-import { Op } from 'sequelize';
 
 export class EventService {
   async createEvent(userId: string, eventData: CreateEventData): Promise<Event> {

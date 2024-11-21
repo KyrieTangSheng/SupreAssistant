@@ -43,12 +43,12 @@ Event.init(
     userId: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: 'users',
-        key: 'id'
-      },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      // references: {
+      //   model: 'users',
+      //   key: 'id'
+      // },
+      // onDelete: 'CASCADE',
+      // onUpdate: 'CASCADE'
     },
   },
   {
