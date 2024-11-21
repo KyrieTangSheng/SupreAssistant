@@ -11,7 +11,7 @@ https://api.yourapp.com/v1
 
 ## Authentication
 
-### Register a New User
+### Register a New User [DONE]
 
 - **Endpoint:** `/auth/register`
 - **Method:** `POST`
@@ -51,7 +51,7 @@ https://api.yourapp.com/v1
 }
 ```
 
-### User Login
+### User Login [DONE]
 
 - **Endpoint:** `/auth/login`
 - **Method:** `POST`
@@ -90,7 +90,7 @@ https://api.yourapp.com/v1
 }
 ```
 
-### Refresh Token
+### Refresh Token [TODO]
 
 - **Endpoint:** `/auth/refresh`
 - **Method:** `POST`
@@ -122,7 +122,7 @@ Authorization: Bearer <refresh-token>
 
 ## User Management
 
-### Get User Profile
+### Get User Profile [TODO]
 
 - **Endpoint:** `/users/profile`
 - **Method:** `GET`
@@ -158,7 +158,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Update User Profile
+### Update User Profile [TODO]
 
 - **Endpoint:** `/users/profile`
 - **Method:** `PUT`
@@ -212,7 +212,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Delete User Account
+### Delete User Account [TODO]
 
 - **Endpoint:** `/users/profile`
 - **Method:** `DELETE`
@@ -244,7 +244,7 @@ Authorization: Bearer <jwt-token>
 
 ## Event Management
 
-### Create an Event
+### Create an Event [DONE]
 
 - **Endpoint:** `/events`
 - **Method:** `POST`
@@ -304,7 +304,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Get All Events
+### Get All Events [DONE]
 
 - **Endpoint:** `/events`
 - **Method:** `GET`
@@ -351,7 +351,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Get Single Event
+### Get Single Event [DONE]
 
 - **Endpoint:** `/events/{eventId}`
 - **Method:** `GET`
@@ -402,7 +402,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Update an Event
+### Update an Event [DONE]
 
 - **Endpoint:** `/events/{eventId}`
 - **Method:** `PUT`
@@ -473,7 +473,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Delete an Event
+### Delete an Event [DONE]
 
 - **Endpoint:** `/events/{eventId}`
 - **Method:** `DELETE`
@@ -515,7 +515,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-## Note Management
+## Note Management [TODO]
 
 ### Create a Note
 
@@ -765,7 +765,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-## Real-time Chat (WebSocket)
+## Real-time Chat (WebSocket) [DONE]
 
 ### Overview
 
