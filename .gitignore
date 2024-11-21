@@ -426,3 +426,7 @@ npm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# DB file
+*.sqlite
+
