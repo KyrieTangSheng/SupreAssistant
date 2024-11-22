@@ -1,0 +1,22 @@
+{
+    "name": "supre-assistant",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+      "supreassistant-backend",
+      "supreassistant-mobile"
+    ],
+    "scripts": {
+      "backend:dev": "cd supreassistant-backend && npm run dev",
+      "backend:build": "cd supreassistant-backend && npm run build",
+      "backend:start": "cd supreassistant-backend && npm start",
+      "mobile:android": "cd supreassistant-mobile && npm run android",
+      "mobile:ios": "cd supreassistant-mobile && npm run ios",
+      "mobile:start": "cd supreassistant-mobile && npm start"
+    },
+    "devDependencies": {
+      "concurrently": "^8.2.2",
+      "prettier": "^3.2.5",
+      "typescript": "^5.4.2"
+    }
+  }
