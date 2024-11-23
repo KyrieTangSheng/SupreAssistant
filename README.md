@@ -22,21 +22,37 @@ An intelligent application designed to help users manage their time and schedule
 
 1. **Install dependencies**
    ```bash
-   npm run setup
-   ```
-2. **Build the project**
-   ```bash
-   npm run build
+   npm install
    ```
 
-3. **Start the application**
+2. **Build and start the backend**
    ```bash
-   npm start
+   npm run backend:build
+   npm run backend:start
    ```
 
-4. **Development mode**
+3. **Start the mobile app**
+   NOTE: The mobile app is managed as a separate project due to compatibility issues between @babel/runtime and iOS simulator. While dependencies are managed independently in the mobile folder, you can still execute mobile app commands from the root workspace.
+   
+   First, start the Metro bundler:
    ```bash
-   npm run dev
+   npm run mobile:start
+   ```
+
+   Then, for iOS:
+   ```bash
+   npm run mobile:ios
+   ```
+   
+   Or for Android:
+   ```bash
+   npm run mobile:android
+   ```
+
+4. **BackendDevelopment mode**
+   Backend development:
+   ```bash
+   npm run backend:dev
    ```
 
 ## Docker Deployment
