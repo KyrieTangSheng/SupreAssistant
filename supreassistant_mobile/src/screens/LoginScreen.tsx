@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { authService } from '../services/authService';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { setAuthToken } from '../utils/auth';
 
 type RootStackParamList = {
   Login: undefined;
@@ -28,6 +29,7 @@ export const LoginScreen = ({ navigation }: Props) => {
     try {
       const response = await authService.login(email, password);
       console.log('Login successful:', response);
+      await setAuthToken(response.token);
       navigation.replace('Home');
     } catch (error) {
       Alert.alert('Error', (error as Error).message);

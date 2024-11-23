@@ -430,3 +430,17 @@ Thumbs.db
 # DB file
 *.sqlite
 
+
+# Mobile specific
+supreassistant_mobile/ios/Pods/
+supreassistant_mobile/vendor/
+supreassistant_mobile/.metro-health-check*
+supreassistant_mobile/build/
+supreassistant_mobile/DerivedData/
+supreassistant_mobile/*.hmap
+supreassistant_mobile/*.ipa
+supreassistant_mobile/*.xcuserstate
+supreassistant_mobile/**/.xcode.env.local
+supreassistant_mobile/android/app/debug.keystore
+supreassistant_mobile/android/.gradle
+supreassistant_mobile/android/local.properties
