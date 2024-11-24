@@ -445,9 +445,9 @@ supreassistant_mobile/android/.gradle
 supreassistant_mobile/android/local.properties
 
 # iOS build files
-ios/build/
-ios/Pods/
-ios/DerivedData/
+supreassistant_mobile/ios/build/
+supreassistant_mobile/ios/Pods/
+supreassistant_mobile/ios/DerivedData/
 *.pbxuser
 !default.pbxuser
 *.mode1v3

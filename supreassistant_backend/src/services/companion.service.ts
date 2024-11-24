@@ -5,15 +5,17 @@ import { GoogleProvider } from './llm/google.service';
 import { DatabaseError, NotFoundError } from '../utils/errors';
 import { EventService } from './event.service'
 import { AIResponse } from '../types/companion.types';
+import { NoteService } from './note.service';
 
 export class CompanionService {
   private llmProvider: OpenAIProvider | GoogleProvider;
   private eventService: EventService;
-
+  private noteService: NoteService;
   constructor() {
     this.llmProvider = new OpenAIProvider(); 
     // this.llmProvider = new GoogleProvider();
     this.eventService = new EventService();
+    this.noteService = new NoteService();
   }
 
   async getOrCreateCompanion(userId: string): Promise<Companion> {
@@ -80,10 +82,12 @@ export class CompanionService {
       // Get AI response
       const aiResponse = await this.llmProvider.generateResponse(messages) as AIResponse;
       // If the AI response is to add an event, create the event
+      // If the AI response is to add a note, create the note
       if (aiResponse && aiResponse.intent === 'addEvent' && aiResponse.event) {
         await this.eventService.createEvent(userId, aiResponse.event);
-      } 
-      // TODO: handle other intents
+      } else if (aiResponse && aiResponse.intent === 'addNote' && aiResponse.note) {
+        await this.noteService.createNote(userId, aiResponse.note);
+      }
 
       // Save user message
       await Message.create({

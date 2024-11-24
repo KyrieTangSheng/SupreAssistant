@@ -4,6 +4,7 @@ import { zodResponseFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
 import { AIResponse } from '../../types/companion.types';
 import { CreateEventData } from '../../types/event.types';
+import { CreateNoteData } from '../../types/note.types';
 
 const IntentSchema = z.object({
   intent: z.discriminatedUnion("type", [
@@ -15,6 +16,13 @@ const IntentSchema = z.object({
         endTime: z.string(),
         description: z.string(),
         location: z.string(),
+      }),
+    }),
+    z.object({
+      type: z.literal("addNote"),
+      note: z.object({
+        title: z.string(),
+        content: z.string(),
       }),
     }),
     z.object({
@@ -45,10 +53,17 @@ export class OpenAIProvider {
       if (parsedIntent && parsedIntent.intent.type === 'addEvent') {
         console.log('add_event', parsedIntent.intent.event);
         const responseContent = `Event added: ${parsedIntent.intent.event.title} at ${parsedIntent.intent.event.location} on ${parsedIntent.intent.event.startTime} to ${parsedIntent.intent.event.endTime}; Details: ${parsedIntent.intent.event.description}`;
-        // TODO: add event to database
         return ({
           intent: 'addEvent',
           event: parsedIntent.intent.event as CreateEventData,
+          content: responseContent
+        });
+      } else if (parsedIntent && parsedIntent.intent.type === 'addNote') {
+        console.log('add_note', parsedIntent.intent.note);
+        const responseContent = `Note added: ${parsedIntent.intent.note.title}; Details: ${parsedIntent.intent.note.content}`;
+        return ({
+          intent: 'addNote',
+          note: parsedIntent.intent.note as CreateNoteData,
           content: responseContent
         });
       } else if (parsedIntent && parsedIntent.intent.type === 'generalQuery') {

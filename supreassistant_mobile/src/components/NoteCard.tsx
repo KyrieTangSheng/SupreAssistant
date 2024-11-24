@@ -17,10 +17,14 @@ export const NoteCard = ({ note }: Props) => {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{note.title}</Text>
-      <Text style={styles.date}>Last updated: {formatDate(note.updatedAt)}</Text>
+      <View style={styles.header}>
+        <Text style={styles.title} numberOfLines={1}>
+          {note.title || 'Untitled Note'}
+        </Text>
+        <Text style={styles.date}>{formatDate(note.updatedAt)}</Text>
+      </View>
       <Text style={styles.content} numberOfLines={2}>
-        {note.content}
+        {note.content || 'No content'}
       </Text>
     </View>
   );
@@ -28,28 +32,29 @@ export const NoteCard = ({ note }: Props) => {
 
 const styles = StyleSheet.create({
   card: {
+    padding: 16,
     backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 15,
-    marginVertical: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#000',
+    flex: 1,
+    marginRight: 8,
   },
   date: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 5,
+    fontSize: 13,
+    color: '#8E8E93',
   },
   content: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: 15,
+    color: '#666',
+    lineHeight: 20,
   },
 });

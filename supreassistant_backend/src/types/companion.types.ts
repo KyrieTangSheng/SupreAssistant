@@ -1,4 +1,5 @@
 import { CreateEventData } from "./event.types";
+import { CreateNoteData } from "./note.types";
 
 export interface AICompanion{
     id: string;
@@ -35,4 +36,5 @@ export interface AIResponse{
   intent: string;
   content: string;
   event?: CreateEventData;
+  note?: CreateNoteData;
 }

@@ -7,31 +7,55 @@ interface Props {
 }
 
 export const EventCard = ({ event }: Props) => {
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const now = new Date();
-    
-    const options: Intl.DateTimeFormatOptions = {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    };
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Add year to options if the event is not in the current year
-    if (date.getFullYear() !== now.getFullYear()) {
-      options.year = 'numeric';
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === tomorrow.toDateString()) {
+      return 'Tomorrow';
+    } else {
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+      });
     }
-
-    return date.toLocaleDateString('en-US', options);
   };
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{event.title}</Text>
-      <Text style={styles.time}>{formatDate(event.startTime)}</Text>
-      <Text style={styles.description}>{event.description}</Text>
-      {event.location && <Text style={styles.location}>{event.location}</Text>}
+      <View style={styles.timeContainer}>
+        <Text style={styles.date}>{formatDate(event.startTime)}</Text>
+        <Text style={styles.time}>
+          {formatTime(event.startTime)} - {formatTime(event.endTime)}
+        </Text>
+      </View>
+      
+      <View style={styles.contentContainer}>
+        <Text style={styles.title} numberOfLines={1}>
+          {event.title}
+        </Text>
+        {event.location && (
+          <Text style={styles.location} numberOfLines={1}>
+            📍 {event.location}
+          </Text>
+        )}
+        <Text style={styles.description} numberOfLines={2}>
+          {event.description}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -39,31 +63,54 @@ export const EventCard = ({ event }: Props) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 15,
+    borderRadius: 12,
+    marginHorizontal: 16,
     marginVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    flexDirection: 'row',
+    overflow: 'hidden',
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+  timeContainer: {
+    padding: 12,
+    backgroundColor: '#F8F8F8',
+    borderRightWidth: 1,
+    borderRightColor: '#E5E5E5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 90,
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 12,
+  },
+  date: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#007AFF',
+    marginBottom: 4,
   },
   time: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
-    marginBottom: 5,
   },
-  description: {
-    fontSize: 14,
-    marginBottom: 5,
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 4,
   },
   location: {
     fontSize: 14,
     color: '#666',
+    marginBottom: 4,
+  },
+  description: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
   },
 }); 

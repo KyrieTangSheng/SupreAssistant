@@ -2,24 +2,34 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
+  TouchableOpacity,
   StyleSheet,
   Alert,
-  TouchableOpacity,
+  SectionList,
+  RefreshControl,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { eventService } from '../services/eventService';
-import { EventCard } from '../components/EventCard';
 import { RootStackParamList } from '../types';
+import { EventCard } from '../components/EventCard';
+import { eventService } from '../services/eventService';
 import { Event } from '../types';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+import { EmptyState } from '../components/EmptyState';
+import { Swipeable } from 'react-native-gesture-handler';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Events'>;
 };
 
+type Section = {
+  title: string;
+  data: Event[];
+};
+
 export const EventsScreen = ({ navigation }: Props) => {
-  const [futureEvents, setFutureEvents] = useState<Event[]>([]);
-  const [pastEvents, setPastEvents] = useState<Event[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchEvents();
@@ -27,13 +37,14 @@ export const EventsScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      fetchEvents();
+      fetchEvents(false);
     });
 
     return unsubscribe;
   }, [navigation]);
 
-  const fetchEvents = async () => {
+  const fetchEvents = async (showLoading = true) => {
+    if (showLoading) setIsLoading(true);
     try {
       const response = await eventService.getUserEvents();
       const now = new Date();
@@ -44,66 +55,115 @@ export const EventsScreen = ({ navigation }: Props) => {
       const past = response.filter(event => new Date(event.startTime) <= now)
         .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
 
-      setFutureEvents(future);
-      setPastEvents(past);
+      setSections([
+        { title: 'Upcoming Events', data: future },
+        { title: 'Past Events', data: past },
+      ]);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch events');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchEvents(false);
+    setIsRefreshing(false);
+  };
+
+  const handleDelete = async (eventId: string) => {
+    try {
+      await eventService.deleteEvent(eventId);
+      await fetchEvents(false);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete event');
+    }
+  };
+
+  const renderRightActions = (eventId: string) => (
+    <TouchableOpacity
+      style={styles.deleteAction}
+      onPress={() => handleDelete(eventId)}
+    >
+      <Text style={styles.deleteActionText}>Delete</Text>
+    </TouchableOpacity>
+  );
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   const handleEventPress = (eventId: string) => {
     navigation.navigate('EventDetails', { eventId });
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <TouchableOpacity 
-        onPress={() => navigation.navigate('CreateEvent')}
-        style={styles.newEventButton}
-      >
-        <Text style={styles.newEventButtonText}>+ New Event</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.sectionTitle}>Upcoming Events</Text>
-      {futureEvents.map(event => (
-        <TouchableOpacity 
-          key={event.id} 
-          onPress={() => handleEventPress(event.id)}
-        >
-          <EventCard event={event} />
-        </TouchableOpacity>
-      ))}
-      
-      <Text style={styles.sectionTitle}>Past Events</Text>
-      {pastEvents.map(event => (
-        <TouchableOpacity 
-          key={event.id} 
-          onPress={() => handleEventPress(event.id)}
-        >
-          <EventCard event={event} />
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+    <View style={styles.container}>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Swipeable renderRightActions={() => renderRightActions(item.id)}>
+            <TouchableOpacity onPress={() => handleEventPress(item.id)}>
+              <EventCard event={item} />
+            </TouchableOpacity>
+          </Swipeable>
+        )}
+        renderSectionHeader={({ section: { title, data } }) => (
+          data.length > 0 ? (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{title}</Text>
+            </View>
+          ) : null
+        )}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            tintColor="#007AFF"
+          />
+        }
+        ListEmptyComponent={
+          <EmptyState message="No events scheduled. Tap the '+' button to create one!" />
+        }
+        stickySectionHeadersEnabled={true}
+        contentContainerStyle={sections[0].data.length === 0 && sections[1].data.length === 0 ? styles.emptyList : undefined}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#F8F8F8',
+  },
+  sectionHeader: {
+    backgroundColor: '#F8F8F8',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 10,
+    fontWeight: '600',
+    color: '#000',
   },
-  newEventButton: {
-    padding: 10,
+  deleteAction: {
+    backgroundColor: '#FF3B30',
+    justifyContent: 'center',
     alignItems: 'flex-end',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
   },
-  newEventButtonText: {
-    color: '#007AFF',
+  deleteActionText: {
+    color: 'white',
+    fontWeight: '600',
     fontSize: 16,
-    fontWeight: 'bold',
+  },
+  emptyList: {
+    flex: 1,
   },
 }); 

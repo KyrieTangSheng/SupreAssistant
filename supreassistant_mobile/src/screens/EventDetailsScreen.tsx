@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  TextInput,
   StyleSheet,
-  Alert,
   ScrollView,
+  Alert,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { eventService } from '../services/eventService';
 import { Event } from '../types';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EventDetails'>;
@@ -19,102 +21,145 @@ type Props = {
 };
 
 export const EventDetailsScreen = ({ navigation, route }: Props) => {
-  const [event, setEvent] = useState<Event | null>(null);
   const { eventId } = route.params;
+  const [isLoading, setIsLoading] = useState(true);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
   useEffect(() => {
     fetchEventDetails();
   }, [eventId]);
 
+  // Auto-save when fields change
+  useEffect(() => {
+    const saveTimeout = setTimeout(() => {
+      if (!isLoading) {
+        handleSave();
+      }
+    }, 500);
+
+    return () => clearTimeout(saveTimeout);
+  }, [title, description, location, startTime, endTime]);
+
   const fetchEventDetails = async () => {
     try {
-      const eventData = await eventService.getEvent(eventId);
-      setEvent(eventData);
+      const event = await eventService.getEvent(eventId);
+      setTitle(event.title);
+      setDescription(event.description);
+      setLocation(event.location || '');
+      setStartTime(new Date(event.startTime));
+      setEndTime(new Date(event.endTime));
+      setIsLoading(false);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch event details');
       navigation.goBack();
     }
   };
 
-  const handleDelete = async () => {
-    Alert.alert(
-      'Delete Event',
-      'Are you sure you want to delete this event?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await eventService.deleteEvent(eventId);
-              Alert.alert('Success', 'Event deleted successfully');
-              navigation.goBack();
-            } catch (error) {
-              Alert.alert('Error', 'Failed to delete event');
-            }
-          },
-        },
-      ]
-    );
+  const handleSave = async () => {
+    try {
+      await eventService.updateEvent(eventId, {
+        title,
+        description,
+        location,
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
+      });
+    } catch (error) {
+      console.error('Error saving event:', error);
+    }
   };
 
-  if (!event) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
+  const onStartTimeChange = (event: any, selectedDate?: Date) => {
+    setShowStartPicker(false);
+    if (selectedDate) {
+      setStartTime(selectedDate);
+      if (selectedDate > endTime) {
+        const newEndTime = new Date(selectedDate);
+        newEndTime.setHours(selectedDate.getHours() + 1);
+        setEndTime(newEndTime);
+      }
+    }
+  };
+
+  const onEndTimeChange = (event: any, selectedDate?: Date) => {
+    setShowEndPicker(false);
+    if (selectedDate) {
+      if (selectedDate > startTime) {
+        setEndTime(selectedDate);
+      } else {
+        Alert.alert('Invalid Time', 'End time must be after start time');
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
   }
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>{event.title}</Text>
-      
-      <View style={styles.timeContainer}>
-        <Text style={styles.label}>Start Time:</Text>
-        <Text style={styles.value}>
-          {new Date(event.startTime).toLocaleString()}
-        </Text>
-      </View>
+      <TextInput
+        style={styles.titleInput}
+        placeholder="Event Title"
+        value={title}
+        onChangeText={setTitle}
+      />
 
-      <View style={styles.timeContainer}>
-        <Text style={styles.label}>End Time:</Text>
-        <Text style={styles.value}>
-          {new Date(event.endTime).toLocaleString()}
-        </Text>
-      </View>
-
-      {event.location && (
-        <View style={styles.section}>
-          <Text style={styles.label}>Location:</Text>
-          <Text style={styles.value}>{event.location}</Text>
-        </View>
-      )}
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Description:</Text>
-        <Text style={styles.description}>{event.description}</Text>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.button, styles.editButton]}
-          onPress={() => navigation.navigate('EditEvent', { eventId })}
+      <View style={styles.timeSection}>
+        <Text style={styles.label}>Start Time</Text>
+        <Text 
+          style={styles.timeText}
+          onPress={() => setShowStartPicker(true)}
         >
-          <Text style={styles.buttonText}>Edit Event</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.button, styles.deleteButton]}
-          onPress={handleDelete}
-        >
-          <Text style={styles.buttonText}>Delete Event</Text>
-        </TouchableOpacity>
+          {startTime.toLocaleString()}
+        </Text>
+        {showStartPicker && (
+          <DateTimePicker
+            value={startTime}
+            mode="datetime"
+            onChange={onStartTimeChange}
+          />
+        )}
       </View>
+
+      <View style={styles.timeSection}>
+        <Text style={styles.label}>End Time</Text>
+        <Text 
+          style={styles.timeText}
+          onPress={() => setShowEndPicker(true)}
+        >
+          {endTime.toLocaleString()}
+        </Text>
+        {showEndPicker && (
+          <DateTimePicker
+            value={endTime}
+            mode="datetime"
+            onChange={onEndTimeChange}
+            minimumDate={startTime}
+          />
+        )}
+      </View>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Location (optional)"
+        value={location}
+        onChangeText={setLocation}
+      />
+
+      <TextInput
+        style={[styles.input, styles.descriptionInput]}
+        placeholder="Description"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+      />
     </ScrollView>
   );
 };
@@ -122,53 +167,43 @@ export const EventDetailsScreen = ({ navigation, route }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#FFFFFF',
+    padding: 16,
   },
-  title: {
+  titleInput: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginBottom: 20,
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
-  timeContainer: {
-    marginBottom: 15,
-  },
-  section: {
-    marginBottom: 15,
+  timeSection: {
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#666',
-    marginBottom: 5,
+    marginBottom: 8,
   },
-  value: {
+  timeText: {
     fontSize: 16,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 30,
-  },
-  button: {
-    flex: 1,
-    padding: 15,
+    color: '#007AFF',
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
     borderRadius: 8,
-    alignItems: 'center',
-    marginHorizontal: 5,
   },
-  editButton: {
-    backgroundColor: '#007AFF',
-  },
-  deleteButton: {
-    backgroundColor: '#FF3B30',
-  },
-  buttonText: {
-    color: 'white',
+  input: {
     fontSize: 16,
-    fontWeight: 'bold',
+    padding: 8,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderRadius: 8,
+  },
+  descriptionInput: {
+    height: 120,
+    textAlignVertical: 'top',
   },
 }); 
