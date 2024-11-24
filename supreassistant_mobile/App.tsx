@@ -16,6 +16,10 @@ import { CompanionScreen } from './src/screens/CompanionScreen';
 import { CreateEventScreen } from './src/screens/CreateEventScreen';
 import { EventDetailsScreen } from './src/screens/EventDetailsScreen';
 import { EditEventScreen } from './src/screens/EditEventScreen';
+import { NotesScreen } from './src/screens/NotesScreen';
+import { CreateNoteScreen } from './src/screens/CreateNoteScreen';
+import { NoteDetailsScreen } from './src/screens/NoteDetailScreen';
+import { EditNoteScreen } from './src/screens/EditNoteScreen';
 import { RootStackParamList } from './src/types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -69,6 +73,29 @@ function App(): React.JSX.Element {
           name="EditEvent" 
           component={EditEventScreen}
           options={{ title: 'Edit Event' }}
+        />
+        <Stack.Screen 
+          name="Notes" 
+          component={NotesScreen}
+          options={{ 
+            headerShown: true,
+            title: 'Notes'
+          }}
+        />
+        <Stack.Screen 
+          name="CreateNote" 
+          component={CreateNoteScreen}
+          options={{ title: 'Create Note' }}
+        />
+        <Stack.Screen 
+          name="NoteDetails" 
+          component={NoteDetailsScreen}
+          options={{ title: 'Note Details' }}
+        />
+        <Stack.Screen 
+          name="EditNote" 
+          component={EditNoteScreen}
+          options={{ title: 'Edit Note' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,14 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startTime: string;
-  endTime: string;
-  location?: string;
-}
+import { Event } from '../types';
 
 interface Props {
   event: Event;

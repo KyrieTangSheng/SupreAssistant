@@ -89,6 +89,13 @@ export const HomeScreen = ({ navigation }: Props) => {
         <Text style={styles.buttonText}>Chat with AI Assistant</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => navigation.navigate('Notes')}
+      >
+        <Text style={styles.buttonText}>View Notes</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
