@@ -515,9 +515,9 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-## Note Management [TODO]
+## Note Management [DONE]
 
-### Create a Note
+### Create a Note [DONE]
 
 - **Endpoint:** `/notes`
 - **Method:** `POST`
@@ -571,7 +571,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Get All Notes
+### Get All Notes [DONE]
 
 - **Endpoint:** `/notes`
 - **Method:** `GET`
@@ -610,7 +610,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Get Single Note
+### Get Single Note [DONE]
 
 - **Endpoint:** `/notes/{noteId}`
 - **Method:** `GET`
@@ -658,7 +658,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Update a Note
+### Update a Note [DONE]
 
 - **Endpoint:** `/notes/{noteId}`
 - **Method:** `PUT`
@@ -678,7 +678,7 @@ Authorization: Bearer <jwt-token>
 
 ```json
 {
-  "title": "string" // Optional
+  "title": "string", // Optional
   "content": "string" // Optional
 }
 ```
@@ -723,7 +723,7 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
-### Delete a Note
+### Delete a Note [DONE]
 
 - **Endpoint:** `/notes/{noteId}`
 - **Method:** `DELETE`

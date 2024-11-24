@@ -2,6 +2,7 @@ import express from 'express';
 import authRoutes from './routes/auth.routes';
 import eventRoutes from './routes/event.routes';
 import companionRoutes from './routes/companion.routes';
+import noteRoutes from './routes/note.routes';
 
 const app = express();
 
@@ -13,4 +14,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/companions', companionRoutes);
+app.use('/api/notes', noteRoutes);
 export default app; 

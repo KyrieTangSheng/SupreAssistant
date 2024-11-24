@@ -87,7 +87,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"test3@example.com\",\n    \"password\": \"password123\"\n}"
+					"raw": "{\n    \"email\": \"Tang1@a.com\",\n    \"password\": \"password123\"\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/auth/login",
@@ -118,8 +118,8 @@
 							"    pm.expect(jsonData).to.have.property('event');",
 							"    pm.expect(jsonData.event).to.have.property('title');",
 							"    pm.expect(jsonData.event).to.have.property('description');",
-							"    pm.expect(jsonData.event).to.have.property('startDate');",
-							"    pm.expect(jsonData.event).to.have.property('endDate');",
+							"    pm.expect(jsonData.event).to.have.property('startTime');",
+							"    pm.expect(jsonData.event).to.have.property('endTime');",
 							"    ",
 							"    // Store event ID for other tests",
 							"    pm.collectionVariables.set(\"eventId\", jsonData.event.id);",
@@ -240,13 +240,13 @@
 					"raw": "{\n    \"title\": \"Updated Team Meeting\",\n    \"description\": \"Updated weekly team sync\"\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/events/2bdf3b4e-671f-45a5-9c23-d247ee9f6b32",
+					"raw": "{{baseUrl}}/events/{{eventId}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"events",
-						"2bdf3b4e-671f-45a5-9c23-d247ee9f6b32"
+						"{{eventId}}"
 					]
 				}
 			},
@@ -324,7 +324,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Updated Study Buddy\",\n    \"description\": \"Your enhanced study assistant\",\n    \"instructions\": \"I am an improved study companion that helps with academic tasks\",\n    \"model\": \"gpt-4o\"\n}"
+					"raw": "{\n    // \"name\": \"Updated Study Buddy\",\n    // \"description\": \"Your enhanced study assistant\",\n    // \"instructions\": \"I am an improved study companion that helps with academic tasks\",\n    // \"model\": \"gpt-4o\"\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/companions/settings",
@@ -415,7 +415,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"message\": \"what future event do I have on my calendar?\"\n    // \"message\": \"Help me add an event -- tomorrow to five days later I need to study at home\"\n}",
+					"raw": "{\n    // \"message\": \"what future event do I have on my calendar?\"\n    // \"message\": \"Today is 2024 Nov Friday. Help me add an event -- third week of next month, five days later I need to study at home\"\n    \"message\": \"What date is today?\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -430,6 +430,238 @@
 					"path": [
 						"companions",
 						"chat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response has note data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('note');",
+							"    pm.expect(jsonData.note).to.have.property('title');",
+							"    pm.expect(jsonData.note).to.have.property('content');",
+							"    ",
+							"    // Store note ID for other tests",
+							"    pm.collectionVariables.set(\"noteId\", jsonData.note.id);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Meeting Notes\",\n    \"content\": \"Important points discussed during the team meeting.\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/notes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has notes array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('notes');",
+							"    pm.expect(jsonData.notes).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/notes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has note data\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('note');",
+							"    pm.expect(jsonData.note).to.have.property('title');",
+							"    pm.expect(jsonData.note).to.have.property('content');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/notes/{{noteId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notes",
+						"{{noteId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Note was updated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.note.title).to.equal('Updated Meeting Notes');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Updated Meeting Notes\",\n    \"content\": \"Updated points from the team meeting.\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/notes/{{noteId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notes",
+						"{{noteId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Note was deleted\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.equal('Note deleted successfully.');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/notes/{{noteId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notes",
+						"{{noteId}}"
 					]
 				}
 			},
@@ -453,6 +685,11 @@
 		},
 		{
 			"key": "eventId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "noteId",
 			"value": "",
 			"type": "default"
 		}

@@ -33,7 +33,7 @@ An intelligent application designed to help users manage their time and schedule
 
 3. **Start the mobile app**
    NOTE: The mobile app is managed as a separate project due to compatibility issues between @babel/runtime and iOS simulator. While dependencies are managed independently in the mobile folder, you can still execute mobile app commands from the root workspace.
-   
+
    First, start the Metro bundler:
    ```bash
    npm run mobile:start
@@ -47,6 +47,12 @@ An intelligent application designed to help users manage their time and schedule
    Or for Android:
    ```bash
    npm run mobile:android
+   ```
+
+   Before running ios, you need to install pods:
+   ```bash
+   cd supreassistant_mobile/ios
+   pod install
    ```
 
 4. **BackendDevelopment mode**

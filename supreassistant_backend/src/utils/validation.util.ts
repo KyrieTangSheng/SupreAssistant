@@ -1,4 +1,5 @@
 import { CreateEventData } from '../types/event.types';
+import { CreateNoteData } from '../types/note.types';
 
 export const validateEvent = (data: CreateEventData): string | null => {
   if (!data.title || data.title.trim().length < 3) {
@@ -96,6 +97,18 @@ export const validateCompanionUpdate = (data: any): string | null => {
   const allowedModels = ['gpt-4', 'gpt-3.5-turbo'];
   if (model && !allowedModels.includes(model)) {
     return 'Invalid model specified';
+  }
+
+  return null;
+};
+
+export const validateNote = (data: CreateNoteData): string | null => {
+  if (!data.title || data.title.trim().length < 1) {
+    return 'Title is required';
+  }
+
+  if (!data.content) {
+    return 'Content is required';
   }
 
   return null;
