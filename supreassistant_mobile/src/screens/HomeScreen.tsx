@@ -64,12 +64,6 @@ export const HomeScreen = ({ navigation }: Props) => {
                     <EventCard event={event} />
                   </TouchableOpacity>
                 ))}
-                {/* <TouchableOpacity 
-                  style={styles.viewAllButton}
-                  onPress={() => navigation.navigate('Events')}
-                >
-                  <Text style={styles.viewAllText}>View All Events</Text>
-                </TouchableOpacity> */}
               </View>
             )}
           </View>
@@ -90,6 +84,15 @@ export const HomeScreen = ({ navigation }: Props) => {
             <Text style={styles.buttonIcon}>🤖</Text>
             <Text style={styles.buttonTitle}>AI Companion</Text>
             <Text style={styles.buttonSubtitle}>Get assistance</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={() => navigation.navigate('Settings')}
+          >
+            <Text style={styles.buttonIcon}>⚙️</Text>
+            <Text style={styles.buttonTitle}>Settings</Text>
+            <Text style={styles.buttonSubtitle}>Manage your account</Text>
           </TouchableOpacity>
         </View>
       </View>

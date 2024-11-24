@@ -40,6 +40,12 @@ export type RootStackParamList = {
   CreateNote: undefined;
   NoteDetails: { noteId: string };
   EditNote: { noteId: string };
+  Settings: undefined;
+  Profile: undefined;
+  Notifications: undefined;
+  About: undefined;
+  Privacy: undefined;
+  Terms: undefined;
 };
   
 export interface Message {
