@@ -11,6 +11,7 @@ import {
 import { noteService } from '../services/noteService';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { colors, spacing, typography, layout, shadows } from '../themes';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'CreateNote'>;
@@ -37,29 +38,29 @@ export const CreateNoteScreen = ({ navigation }: Props) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Create New Note</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Note Title"
-        value={title}
-        onChangeText={setTitle}
-      />
+      <View style={styles.header}>
+        <Text style={styles.headerLabel}>Note Summary ✨</Text>
+        <TextInput
+          style={styles.titleInput}
+          placeholder="Give your note a title"
+          placeholderTextColor={colors.input.placeholder}
+          value={title}
+          onChangeText={setTitle}
+        />
+      </View>
 
-      <TextInput
-        style={[styles.input, styles.contentInput]}
-        placeholder="Note Content"
-        value={content}
-        onChangeText={setContent}
-        multiline
-      />
-
-      <TouchableOpacity 
-        style={styles.createButton}
-        onPress={handleCreateNote}
-      >
-        <Text style={styles.buttonText}>Create Note</Text>
-      </TouchableOpacity>
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>📝 Content</Text>
+        <TextInput
+          style={styles.contentInput}
+          placeholder="Start writing your thoughts..."
+          placeholderTextColor={colors.input.placeholder}
+          value={content}
+          onChangeText={setContent}
+          multiline
+          textAlignVertical="top"
+        />
+      </View>
     </ScrollView>
   );
 };
@@ -67,34 +68,62 @@ export const CreateNoteScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: colors.background,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+  header: {
+    backgroundColor: colors.card,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border.light,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
+  headerLabel: {
+    ...typography.footnote,
+    color: colors.text.primary,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: spacing.xs,
+    textTransform: 'uppercase',
+  },
+  titleInput: {
+    ...typography.title2,
+    color: colors.text.primary,
+    fontWeight: '600',
+    padding: spacing.xs,
+    backgroundColor: colors.input.background,
+    borderRadius: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  card: {
+    backgroundColor: colors.card,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    borderRadius: spacing.md,
+    padding: spacing.lg,
+    shadowColor: colors.text.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  sectionTitle: {
+    ...typography.headline,
+    color: colors.text.primary,
+    fontWeight: '600',
+    marginBottom: spacing.md,
+    letterSpacing: 0.3,
   },
   contentInput: {
-    height: 200,
-    textAlignVertical: 'top',
-  },
-  createButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    ...typography.body,
+    color: colors.text.primary,
+    backgroundColor: colors.input.background,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    minHeight: spacing.xxl * 8,
+    maxHeight: spacing.xxl * 12,
+    fontWeight: '400',
   },
 });

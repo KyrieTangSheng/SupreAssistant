@@ -11,6 +11,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { profileService } from '../services/profileService';
+import { colors, spacing, typography } from '../themes';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Profile'>;
@@ -102,48 +103,51 @@ export const ProfileScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.background,
   },
   section: {
-    marginTop: 20,
+    marginTop: spacing.lg,
   },
   sectionHeader: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6b6b6b',
-    marginLeft: 16,
-    marginBottom: 8,
+    ...typography.footnote,
+    color: colors.text.secondary,
+    marginLeft: spacing.lg,
+    marginBottom: spacing.sm,
     textTransform: 'uppercase',
+    fontWeight: '400',
   },
   group: {
-    backgroundColor: 'white',
+    backgroundColor: colors.card,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#c8c8c8',
+    borderColor: colors.border.light,
   },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    minHeight: 44,
-    backgroundColor: 'white',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    minHeight: spacing.xl + spacing.md,
+    backgroundColor: colors.card,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#c8c8c8',
+    borderBottomColor: colors.border.light,
   },
   label: {
-    fontSize: 17,
+    ...typography.body,
+    color: colors.text.primary,
     flex: 1,
-    color: '#000',
+    fontWeight: '400',
   },
   value: {
-    fontSize: 17,
-    color: '#8E8E93',
+    ...typography.body,
+    color: colors.text.secondary,
+    fontWeight: '400',
   },
   input: {
-    fontSize: 17,
-    color: '#000',
+    ...typography.body,
+    color: colors.text.primary,
     textAlign: 'right',
     flex: 1,
+    fontWeight: '400',
   },
 });

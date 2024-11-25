@@ -16,6 +16,7 @@ import { Event } from '../types';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EmptyState } from '../components/EmptyState';
 import { Swipeable } from 'react-native-gesture-handler';
+import { colors, layout, spacing, typography } from '../themes';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Events'>;
@@ -113,7 +114,11 @@ export const EventsScreen = ({ navigation }: Props) => {
         renderSectionHeader={({ section: { title, data } }) => (
           data.length > 0 ? (
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{title}</Text>
+              {title === 'Upcoming Events' ? (
+                <Text style={styles.sectionTitle}>Coming Up ⭐️</Text>
+              ) : (
+                <Text style={styles.sectionTitle}>Memory Lane 🌟</Text>
+              )}
             </View>
           ) : null
         )}
@@ -125,7 +130,9 @@ export const EventsScreen = ({ navigation }: Props) => {
           />
         }
         ListEmptyComponent={
-          <EmptyState message="No events scheduled. Tap the '+' button to create one!" />
+          <EmptyState 
+            message="Time to plan something exciting! ✨ Tap '+' to create your first event." 
+          />
         }
         stickySectionHeadersEnabled={true}
         contentContainerStyle={sections[0].data.length === 0 && sections[1].data.length === 0 ? styles.emptyList : undefined}
@@ -137,31 +144,35 @@ export const EventsScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: colors.background,
   },
   sectionHeader: {
-    backgroundColor: '#F8F8F8',
-    padding: 16,
+    backgroundColor: colors.background,
+    padding: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: colors.border.light,
   },
   sectionTitle: {
-    fontSize: 20,
+    ...typography.headline,
+    color: colors.primary,
     fontWeight: '600',
-    color: '#000',
+    letterSpacing: 0.3,
   },
   deleteAction: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.danger,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    padding: spacing.md,
+    marginVertical: spacing.xs,
+    marginHorizontal: spacing.md,
+    borderRadius: layout.borderRadius.medium,
   },
   deleteActionText: {
-    color: 'white',
+    color: colors.text.inverse,
+    ...typography.footnote,
     fontWeight: '600',
-    fontSize: 16,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   emptyList: {
     flex: 1,

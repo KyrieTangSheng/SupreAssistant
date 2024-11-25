@@ -6,9 +6,12 @@ import {
   Text,
   StyleSheet,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { authService } from '../services/authService';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors, spacing, typography, layout, shadows } from '../themes';
 
 type RootStackParamList = {
   Login: undefined;
@@ -22,108 +25,197 @@ export const RegisterScreen = ({ navigation }: { navigation: RegisterScreenNavig
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async () => {
+    if (!username || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      if (password !== confirmPassword) {
-        Alert.alert('Error', 'Passwords do not match');
-        return;
-      }
       await authService.register(username, email, password);
       Alert.alert(
         'Success',
         'Registration successful! Please login with your credentials.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login')
-          }
-        ]
+        [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
       );
     } catch (error) {
       Alert.alert('Error', (error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        textContentType="oneTimeCode"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-        textContentType="oneTimeCode"
-      />
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.linkText}>Already have an account? Login</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView 
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.headerContainer}>
+          <Text style={styles.title}>Join SupreAssistant 🚀</Text>
+          <Text style={styles.subtitle}>Your journey to supreme productivity starts here</Text>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Username</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Choose a username"
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Create a password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoComplete="password-new"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Confirm Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+              autoComplete="password-new"
+            />
+          </View>
+
+          <TouchableOpacity 
+            style={[styles.button, isLoading && styles.buttonDisabled]}
+            onPress={handleRegister}
+            disabled={isLoading}
+          >
+            <Text style={styles.buttonText}>
+              {isLoading ? 'Creating Account...' : 'Sign Up'}
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.linkText}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: colors.card,
+  },
+  contentContainer: {
+    flex: 1,
+    padding: spacing.lg,
     justifyContent: 'center',
+  },
+  headerContainer: {
+    marginBottom: spacing.lg,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    ...typography.title1,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  subtitle: {
+    ...typography.callout,
+    color: colors.text.secondary,
+    fontWeight: '500',
+    letterSpacing: 0.1,
+  },
+  formContainer: {
+    width: '100%',
+  },
+  inputContainer: {
+    marginBottom: spacing.md,
+  },
+  label: {
+    ...typography.footnote,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+    fontWeight: '500',
   },
   input: {
-    height: 50,
+    height: spacing.xl,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
+    borderColor: colors.border.light,
+    borderRadius: layout.borderRadius.medium,
+    paddingHorizontal: spacing.md,
+    ...typography.body,
+    backgroundColor: colors.input.background,
+    color: colors.text.primary,
+    fontWeight: '400',
   },
   button: {
-    backgroundColor: '#007AFF',
-    height: 50,
-    borderRadius: 8,
+    height: spacing.xl,
+    backgroundColor: colors.primary,
+    borderRadius: layout.borderRadius.medium,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15,
+    marginTop: spacing.lg,
+    ...shadows.small,
+  },
+  buttonDisabled: {
+    backgroundColor: colors.text.tertiary,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.text.inverse,
+    ...typography.callout,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: spacing.lg,
+  },
+  footerText: {
+    color: colors.text.secondary,
+    ...typography.footnote,
+    fontWeight: '500',
   },
   linkText: {
-    color: '#007AFF',
-    textAlign: 'center',
+    color: colors.primary,
+    ...typography.footnote,
+    fontWeight: '600',
+    letterSpacing: 0.2,
   },
 }); 

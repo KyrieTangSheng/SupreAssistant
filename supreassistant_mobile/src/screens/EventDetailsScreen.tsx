@@ -6,14 +6,15 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { eventService } from '../services/eventService';
-import { Event } from '../types';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { colors, spacing, typography } from '../themes';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EventDetails'>;
@@ -104,62 +105,76 @@ export const EventDetailsScreen = ({ navigation, route }: Props) => {
 
   return (
     <ScrollView style={styles.container}>
-      <TextInput
-        style={styles.titleInput}
-        placeholder="Event Title"
-        value={title}
-        onChangeText={setTitle}
-      />
-
-      <View style={styles.timeSection}>
-        <Text style={styles.label}>Start Time</Text>
-        <Text 
-          style={styles.timeText}
-          onPress={() => setShowStartPicker(true)}
-        >
-          {startTime.toLocaleString()}
-        </Text>
-        {showStartPicker && (
-          <DateTimePicker
-            value={startTime}
-            mode="datetime"
-            onChange={onStartTimeChange}
-          />
-        )}
+      <View style={styles.header}>
+        <Text style={styles.headerLabel}>Event Summary ✨</Text>
+        <TextInput
+          style={styles.titleInput}
+          placeholder="Give your event a catchy title"
+          placeholderTextColor={colors.input.placeholder}
+          value={title}
+          onChangeText={setTitle}
+        />
       </View>
 
-      <View style={styles.timeSection}>
-        <Text style={styles.label}>End Time</Text>
-        <Text 
-          style={styles.timeText}
-          onPress={() => setShowEndPicker(true)}
-        >
-          {endTime.toLocaleString()}
-        </Text>
-        {showEndPicker && (
-          <DateTimePicker
-            value={endTime}
-            mode="datetime"
-            onChange={onEndTimeChange}
-            minimumDate={startTime}
+      <View style={styles.card}>
+        <View style={styles.timeSection}>
+          <Text style={styles.sectionTitle}>🗓 When</Text>
+          <TouchableOpacity 
+            style={styles.timeButton}
+            onPress={() => setShowStartPicker(true)}
+          >
+            <Text style={styles.timeLabel}>Starts</Text>
+            <Text style={styles.timeText}>{startTime.toLocaleString()}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.timeButton}
+            onPress={() => setShowEndPicker(true)}
+          >
+            <Text style={styles.timeLabel}>Ends</Text>
+            <Text style={styles.timeText}>{endTime.toLocaleString()}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.locationSection}>
+          <Text style={styles.sectionTitle}>📍 Where</Text>
+          <TextInput
+            style={styles.locationInput}
+            placeholder="Add location"
+            placeholderTextColor={colors.input.placeholder}
+            value={location}
+            onChangeText={setLocation}
           />
-        )}
+        </View>
       </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Location (optional)"
-        value={location}
-        onChangeText={setLocation}
-      />
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>✨ Details</Text>
+        <TextInput
+          style={styles.descriptionInput}
+          placeholder="What's this event about?"
+          placeholderTextColor={colors.input.placeholder}
+          value={description}
+          onChangeText={setDescription}
+          multiline
+        />
+      </View>
 
-      <TextInput
-        style={[styles.input, styles.descriptionInput]}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-      />
+      {showStartPicker && (
+        <DateTimePicker
+          value={startTime}
+          mode="datetime"
+          onChange={onStartTimeChange}
+        />
+      )}
+      {showEndPicker && (
+        <DateTimePicker
+          value={endTime}
+          mode="datetime"
+          onChange={onEndTimeChange}
+          minimumDate={startTime}
+        />
+      )}
     </ScrollView>
   );
 };
@@ -167,43 +182,96 @@ export const EventDetailsScreen = ({ navigation, route }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: 16,
+    backgroundColor: colors.background,
+  },
+  header: {
+    backgroundColor: colors.card,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border.light,
+  },
+  headerLabel: {
+    ...typography.footnote,
+    color: colors.text.primary,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: spacing.xs,
+    textTransform: 'uppercase',
   },
   titleInput: {
-    fontSize: 24,
+    ...typography.title2,
+    color: colors.text.primary,
     fontWeight: '600',
-    marginBottom: 20,
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    padding: spacing.xs,
+    backgroundColor: colors.input.background,
+    borderRadius: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  card: {
+    backgroundColor: colors.card,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    borderRadius: spacing.md,
+    padding: spacing.lg,
+    shadowColor: colors.text.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  sectionTitle: {
+    ...typography.headline,
+    color: colors.text.primary,
+    fontWeight: '600',
+    marginBottom: spacing.md,
+    letterSpacing: 0.3,
   },
   timeSection: {
-    marginBottom: 20,
+    marginBottom: spacing.lg,
   },
-  label: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
+  timeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.input.background,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  timeLabel: {
+    ...typography.footnote,
+    color: colors.text.secondary,
+    fontWeight: '500',
   },
   timeText: {
-    fontSize: 16,
-    color: '#007AFF',
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderRadius: 8,
+    ...typography.callout,
+    color: colors.primary,
+    fontWeight: '500',
   },
-  input: {
-    fontSize: 16,
-    padding: 8,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderRadius: 8,
+  locationSection: {
+    marginBottom: spacing.sm,
+  },
+  locationInput: {
+    ...typography.body,
+    color: colors.text.primary,
+    backgroundColor: colors.input.background,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    marginBottom: spacing.sm,
+    fontWeight: '400',
   },
   descriptionInput: {
-    height: 120,
+    ...typography.body,
+    color: colors.text.primary,
+    backgroundColor: colors.input.background,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    height: spacing.xxl * 4,
     textAlignVertical: 'top',
+    fontWeight: '400',
   },
 }); 

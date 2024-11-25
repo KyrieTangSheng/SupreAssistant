@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Message } from '../types';
 import { companionService } from '../services/companionService';
+import { colors, spacing, layout, typography } from '../themes';
 
 export const CompanionScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -118,57 +119,61 @@ export const CompanionScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   messageList: {
     flex: 1,
-    padding: 10,
+    padding: spacing.sm,
   },
   messageBubble: {
     maxWidth: '80%',
-    padding: 12,
-    borderRadius: 16,
-    marginVertical: 4,
+    padding: spacing.md,
+    borderRadius: layout.borderRadius.large,
+    marginVertical: spacing.xs,
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
   },
   assistantMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E5E5EA',
+    backgroundColor: colors.input.background,
   },
   messageText: {
-    fontSize: 16,
-    color: '#000',
+    ...typography.body,
+    color: colors.text.primary,
+    fontWeight: '400',
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 10,
-    backgroundColor: 'white',
+    padding: spacing.sm,
+    backgroundColor: colors.card,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: colors.border.light,
   },
   input: {
     flex: 1,
-    marginRight: 10,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    maxHeight: 100,
+    marginRight: spacing.sm,
+    padding: spacing.sm,
+    backgroundColor: colors.input.background,
+    borderRadius: layout.borderRadius.large,
+    maxHeight: spacing.xxl * 2,
+    ...typography.body,
+    color: colors.text.primary,
+    fontWeight: '400',
   },
   sendButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    padding: spacing.sm,
   },
   sendButtonText: {
-    color: '#007AFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.primary,
+    ...typography.body,
+    fontWeight: '600',
   },
   messageListContent: {
     flexGrow: 1,
-    paddingBottom: 10,
+    paddingBottom: spacing.sm,
   }
 }); 

@@ -16,6 +16,7 @@ import { Note } from '../types';
 import { Swipeable } from 'react-native-gesture-handler';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EmptyState } from '../components/EmptyState';
+import { colors, spacing } from '../themes';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Notes'>;
@@ -56,10 +57,6 @@ export const NotesScreen = ({ navigation }: Props) => {
     setIsRefreshing(false);
   };
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
   const handleDelete = async (noteId: string) => {
     try {
       await noteService.deleteNote(noteId);
@@ -69,16 +66,14 @@ export const NotesScreen = ({ navigation }: Props) => {
     }
   };
 
-  const renderRightActions = (noteId: string) => {
-    return (
-      <TouchableOpacity
-        style={styles.deleteAction}
-        onPress={() => handleDelete(noteId)}
-      >
-        <Text style={styles.deleteActionText}>Delete</Text>
-      </TouchableOpacity>
-    );
-  };
+  const renderRightActions = (noteId: string) => (
+    <TouchableOpacity
+      style={styles.deleteAction}
+      onPress={() => handleDelete(noteId)}
+    >
+      <Text style={styles.deleteActionText}>Delete</Text>
+    </TouchableOpacity>
+  );
 
   const renderItem = ({ item }: { item: Note }) => (
     <Swipeable
@@ -87,29 +82,55 @@ export const NotesScreen = ({ navigation }: Props) => {
     >
       <TouchableOpacity
         onPress={() => navigation.navigate('NoteDetails', { noteId: item.id })}
-        style={styles.noteItem}
+        style={styles.noteCard}
       >
-        <NoteCard note={item} />
+        <View style={styles.noteContent}>
+          <Text style={styles.noteTitle} numberOfLines={1}>
+            {item.title || 'Untitled Note'}
+          </Text>
+          <Text style={styles.notePreview} numberOfLines={2}>
+            {item.content}
+          </Text>
+          <View style={styles.noteFooter}>
+            <Text style={styles.noteDate}>
+              {new Date(item.updatedAt).toLocaleDateString()}
+            </Text>
+          </View>
+        </View>
       </TouchableOpacity>
     </Swipeable>
   );
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerLabel}>My Notes ✍️</Text>
+        <Text style={styles.headerCount}>{notes.length} notes</Text>
+      </View>
+
       <FlatList
         data={notes}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        contentContainerStyle={notes.length === 0 ? styles.emptyList : undefined}
+        contentContainerStyle={[
+          styles.listContent,
+          notes.length === 0 && styles.emptyList
+        ]}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={onRefresh}
-            tintColor="#007AFF"
+            tintColor={colors.primary}
           />
         }
         ListEmptyComponent={
-          <EmptyState message="No notes yet. Tap the '+' button to create one!" />
+          <EmptyState 
+            message="Start capturing your thoughts! ✨" 
+          />
         }
       />
     </View>
@@ -119,15 +140,73 @@ export const NotesScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: colors.background,
   },
-  noteItem: {
+  header: {
+    backgroundColor: colors.card,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border.light,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headerLabel: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.text.primary,
+  },
+  headerCount: {
+    fontSize: 16,
+    color: colors.text.secondary,
+  },
+  listContent: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+  noteCard: {
     backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: colors.border.light,
+    paddingVertical: spacing.md,
   },
-  emptyList: {
+  noteContent: {
     flex: 1,
+  },
+  noteTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text.primary,
+  },
+  notePreview: {
+    fontSize: 14,
+    color: colors.text.secondary,
+  },
+  noteFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: spacing.sm,
+  },
+  noteDate: {
+    fontSize: 12,
+    color: colors.text.secondary,
+  },
+  tagContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tag: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: 4,
+    marginRight: spacing.xs,
+  },
+  tagText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'white',
   },
   deleteAction: {
     backgroundColor: '#FF3B30',
@@ -140,5 +219,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  emptyList: {
+    flex: 1,
   },
 });

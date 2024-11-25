@@ -15,7 +15,6 @@ import { EventsScreen } from './src/screens/EventsScreen';
 import { CompanionScreen } from './src/screens/CompanionScreen';
 import { CreateEventScreen } from './src/screens/CreateEventScreen';
 import { EventDetailsScreen } from './src/screens/EventDetailsScreen';
-import { EditEventScreen } from './src/screens/EditEventScreen';
 import { NotesScreen } from './src/screens/NotesScreen';
 import { CreateNoteScreen } from './src/screens/CreateNoteScreen';
 import { NoteDetailsScreen } from './src/screens/NoteDetailScreen';
@@ -76,11 +75,6 @@ function App(): React.JSX.Element {
             name="EventDetails" 
             component={EventDetailsScreen}
             options={{ title: 'Event Details' }}
-          />
-          <Stack.Screen 
-            name="EditEvent" 
-            component={EditEventScreen}
-            options={{ title: 'Edit Event' }}
           />
           <Stack.Screen 
             name="Notes" 

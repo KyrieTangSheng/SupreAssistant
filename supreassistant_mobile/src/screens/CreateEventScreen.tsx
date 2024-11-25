@@ -12,6 +12,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { eventService } from '../services/eventService';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { colors, spacing, typography } from '../themes';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'CreateEvent'>;
@@ -46,36 +47,60 @@ export const CreateEventScreen = ({ navigation }: Props) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Create New Event</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Event Title"
-        value={title}
-        onChangeText={setTitle}
-      />
+      <View style={styles.header}>
+        <Text style={styles.headerLabel}>Event Summary ✨</Text>
+        <TextInput
+          style={styles.titleInput}
+          placeholder="Give your event a catchy title"
+          placeholderTextColor={colors.input.placeholder}
+          value={title}
+          onChangeText={setTitle}
+        />
+      </View>
 
-      <TextInput
-        style={[styles.input, styles.multilineInput]}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-      />
+      <View style={styles.card}>
+        <View style={styles.timeSection}>
+          <Text style={styles.sectionTitle}>🗓 When</Text>
+          <TouchableOpacity 
+            style={styles.timeButton}
+            onPress={() => setShowStartPicker(true)}
+          >
+            <Text style={styles.timeLabel}>Starts</Text>
+            <Text style={styles.timeText}>{startTime.toLocaleString()}</Text>
+          </TouchableOpacity>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Location (optional)"
-        value={location}
-        onChangeText={setLocation}
-      />
+          <TouchableOpacity 
+            style={styles.timeButton}
+            onPress={() => setShowEndPicker(true)}
+          >
+            <Text style={styles.timeLabel}>Ends</Text>
+            <Text style={styles.timeText}>{endTime.toLocaleString()}</Text>
+          </TouchableOpacity>
+        </View>
 
-      <TouchableOpacity 
-        style={styles.dateButton}
-        onPress={() => setShowStartPicker(true)}
-      >
-        <Text>Start Time: {startTime.toLocaleString()}</Text>
-      </TouchableOpacity>
+        <View style={styles.locationSection}>
+          <Text style={styles.sectionTitle}>📍 Where</Text>
+          <TextInput
+            style={styles.locationInput}
+            placeholder="Add location"
+            placeholderTextColor={colors.input.placeholder}
+            value={location}
+            onChangeText={setLocation}
+          />
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>✨ Details</Text>
+        <TextInput
+          style={styles.descriptionInput}
+          placeholder="What's this event about?"
+          placeholderTextColor={colors.input.placeholder}
+          value={description}
+          onChangeText={setDescription}
+          multiline
+        />
+      </View>
 
       {showStartPicker && (
         <DateTimePicker
@@ -87,14 +112,6 @@ export const CreateEventScreen = ({ navigation }: Props) => {
           }}
         />
       )}
-
-      <TouchableOpacity 
-        style={styles.dateButton}
-        onPress={() => setShowEndPicker(true)}
-      >
-        <Text>End Time: {endTime.toLocaleString()}</Text>
-      </TouchableOpacity>
-
       {showEndPicker && (
         <DateTimePicker
           value={endTime}
@@ -103,15 +120,9 @@ export const CreateEventScreen = ({ navigation }: Props) => {
             setShowEndPicker(false);
             if (date) setEndTime(date);
           }}
+          minimumDate={startTime}
         />
       )}
-
-      <TouchableOpacity 
-        style={styles.createButton}
-        onPress={handleCreateEvent}
-      >
-        <Text style={styles.buttonText}>Create Event</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -119,41 +130,96 @@ export const CreateEventScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: colors.background,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+  header: {
+    backgroundColor: colors.card,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border.light,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
+  headerLabel: {
+    ...typography.footnote,
+    color: colors.text.primary,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: spacing.xs,
+    textTransform: 'uppercase',
   },
-  multilineInput: {
-    height: 100,
-    textAlignVertical: 'top',
+  titleInput: {
+    ...typography.title2,
+    color: colors.text.primary,
+    fontWeight: '600',
+    padding: spacing.xs,
+    backgroundColor: colors.input.background,
+    borderRadius: spacing.sm,
+    marginTop: spacing.xs,
   },
-  dateButton: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    marginBottom: 15,
+  card: {
+    backgroundColor: colors.card,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    borderRadius: spacing.md,
+    padding: spacing.lg,
+    shadowColor: colors.text.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  createButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
+  sectionTitle: {
+    ...typography.headline,
+    color: colors.text.primary,
+    fontWeight: '600',
+    marginBottom: spacing.md,
+    letterSpacing: 0.3,
+  },
+  timeSection: {
+    marginBottom: spacing.lg,
+  },
+  timeButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
+    justifyContent: 'space-between',
+    backgroundColor: colors.input.background,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    marginBottom: spacing.sm,
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+  timeLabel: {
+    ...typography.footnote,
+    color: colors.text.secondary,
+    fontWeight: '500',
+  },
+  timeText: {
+    ...typography.callout,
+    color: colors.primary,
+    fontWeight: '500',
+  },
+  locationSection: {
+    marginBottom: spacing.sm,
+  },
+  locationInput: {
+    ...typography.body,
+    color: colors.text.primary,
+    backgroundColor: colors.input.background,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    marginBottom: spacing.sm,
+    fontWeight: '400',
+  },
+  descriptionInput: {
+    ...typography.body,
+    color: colors.text.primary,
+    backgroundColor: colors.input.background,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    height: spacing.xxl * 4,
+    textAlignVertical: 'top',
+    fontWeight: '400',
   },
 }); 
