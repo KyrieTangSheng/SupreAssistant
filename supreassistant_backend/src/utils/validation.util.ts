@@ -112,4 +112,29 @@ export const validateNote = (data: CreateNoteData): string | null => {
   }
 
   return null;
+};
+
+export const validateProfileUpdate = (data: any): string | null => {
+  const { username, email, password } = data;
+
+  if (Object.keys(data).length === 0) {
+    return 'At least one field must be provided for update';
+  }
+
+  if (username && (typeof username !== 'string' || username.trim().length < 3)) {
+    return 'Username must be at least 3 characters long';
+  }
+
+  if (email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return 'Please enter a valid email address';
+    }
+  }
+
+  if (password && password.length < 8) {
+    return 'Password must be at least 8 characters long';
+  }
+
+  return null;
 }; 

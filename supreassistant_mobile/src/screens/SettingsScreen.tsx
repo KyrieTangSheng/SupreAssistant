@@ -53,43 +53,12 @@ export const SettingsScreen = ({ navigation }: Props) => {
             <Text style={styles.itemText}>Profile</Text>
             <Text style={styles.chevron}>→</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.item}
-            onPress={() => navigation.navigate('Notifications')}
-          >
-            <Text style={styles.itemText}>Notifications</Text>
-            <Text style={styles.chevron}>→</Text>
-          </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionHeader}>App</Text>
         <View style={styles.group}>
-          <TouchableOpacity 
-            style={styles.item}
-            onPress={() => navigation.navigate('About')}
-          >
-            <Text style={styles.itemText}>About</Text>
-            <Text style={styles.chevron}>→</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.item}
-            onPress={() => navigation.navigate('Privacy')}
-          >
-            <Text style={styles.itemText}>Privacy Policy</Text>
-            <Text style={styles.chevron}>→</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.item}
-            onPress={() => navigation.navigate('Terms')}
-          >
-            <Text style={styles.itemText}>Terms of Service</Text>
-            <Text style={styles.chevron}>→</Text>
-          </TouchableOpacity>
         </View>
       </View>
 

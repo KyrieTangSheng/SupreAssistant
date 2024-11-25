@@ -35,17 +35,12 @@ export type RootStackParamList = {
   CreateEvent: undefined;
   EventDetails: { eventId: string };
   EditEvent: { eventId: string };
-  Companion: undefined;
   Notes: undefined;
   CreateNote: undefined;
   NoteDetails: { noteId: string };
-  EditNote: { noteId: string };
+  Companion: undefined;
   Settings: undefined;
   Profile: undefined;
-  Notifications: undefined;
-  About: undefined;
-  Privacy: undefined;
-  Terms: undefined;
 };
   
 export interface Message {

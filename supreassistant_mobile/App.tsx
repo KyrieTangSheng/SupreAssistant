@@ -24,6 +24,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TouchableOpacity, Text } from 'react-native';
 import { HeaderAddButton } from './src/components/HeaderAddButton';
 import { SettingsScreen } from './src/screens/SettingsScreen';
+import { ProfileScreen } from './src/screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -107,6 +108,13 @@ function App(): React.JSX.Element {
             component={SettingsScreen}
             options={{
               title: 'Settings',
+            }}
+          />
+          <Stack.Screen 
+            name="Profile" 
+            component={ProfileScreen}
+            options={{
+              title: 'Profile',
             }}
           />
         </Stack.Navigator>
