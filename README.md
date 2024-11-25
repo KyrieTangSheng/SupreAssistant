@@ -7,16 +7,16 @@ An intelligent application designed to help users manage their time and schedule
 ## Core Features
 
 ### User Data Management
-- **Events**: Create, Read, Update, Delete // DONE
-- **Notes**: Create, Read, Update, Delete // TODO
+- **Events**: Create, Read, Update, Delete 
+- **Notes**: Create, Read, Update, Delete
 
 ### AI Assistant
-- Natural language chat interface // DONE
-- Personalized 1:1 AI chatbot per user // DONE
+- Natural language chat interface 
+- Personalized 1:1 AI chatbot per user
 - Contextual memory of user's events, notes, and chat history // DONE, with raw RAG, maybe VectorDB later
 - Powered by Large Language Model APIs 
 - Implements Retrieval Augmented Generation (RAG) // DONE with raw RAG, maybe VectorDB later
-- JSON Structure for AI responses and smooth integration with backend // DONE
+- JSON Structure for AI responses and smooth integration with backend 
 
 ## Installation
 
