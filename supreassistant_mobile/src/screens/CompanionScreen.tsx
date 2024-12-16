@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   assistantMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.input.background,
+    backgroundColor: colors.card,
   },
   messageText: {
     ...typography.body,

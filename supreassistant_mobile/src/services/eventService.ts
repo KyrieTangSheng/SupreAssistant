@@ -16,9 +16,7 @@ export const eventService = {
         }
       });
 
-      console.log('Response status:', response.status);
       const responseText = await response.text();
-      console.log('Response body:', responseText);
 
       if (!response.ok) {
         if (response.status === 401) throw new Error('Authentication required');
