@@ -20,6 +20,12 @@ export const colors = {
       background: '#F3F4F6',
       placeholder: '#A3A3A3',
       border: '#E5E7EB',
+    },
+    message: {
+      userBubble: '#34C759',
+      userText: '#FFFFFF',
+      assistantBubble: '#E9E9EB', // iOS gray bubble
+      assistantText: '#000000',
     }
   };
   

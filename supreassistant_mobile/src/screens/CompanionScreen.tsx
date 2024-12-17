@@ -71,10 +71,11 @@ export const CompanionScreen = () => {
 
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={[
-      styles.messageBubble,
-      item.role === 'user' ? styles.userMessage : styles.assistantMessage
+      item.role === 'user' ? styles.userMessageCard : styles.assistantMessageCard
     ]}>
-      <Text style={styles.messageText}>{item.content}</Text>
+      <Text style={item.role === 'user' ? styles.userMessageText : styles.assistantMessageText}>
+        {item.content}
+      </Text>
     </View>
   );
 
@@ -125,23 +126,36 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: spacing.sm,
   },
-  messageBubble: {
-    maxWidth: '80%',
+  messageListContent: {
+    flexGrow: 1,
+    paddingBottom: spacing.sm,
+  },
+  userMessageCard: {
+    backgroundColor: '#34C759',
     padding: spacing.md,
     borderRadius: layout.borderRadius.large,
-    marginVertical: spacing.xs,
-  },
-  userMessage: {
+    maxWidth: '80%',
     alignSelf: 'flex-end',
-    backgroundColor: colors.primary,
+    marginVertical: spacing.xs,
+    marginHorizontal: spacing.sm,
   },
-  assistantMessage: {
+  assistantMessageCard: {
+    backgroundColor: '#E9E9EB',
+    padding: spacing.md,
+    borderRadius: layout.borderRadius.large,
+    maxWidth: '80%',
     alignSelf: 'flex-start',
-    backgroundColor: colors.card,
+    marginVertical: spacing.xs,
+    marginHorizontal: spacing.sm,
   },
-  messageText: {
+  userMessageText: {
+    color: '#FFFFFF',
     ...typography.body,
-    color: colors.text.primary,
+    fontWeight: '400',
+  },
+  assistantMessageText: {
+    color: '#000000',
+    ...typography.body,
     fontWeight: '400',
   },
   inputContainer: {
@@ -172,8 +186,4 @@ const styles = StyleSheet.create({
     ...typography.body,
     fontWeight: '600',
   },
-  messageListContent: {
-    flexGrow: 1,
-    paddingBottom: spacing.sm,
-  }
 }); 
