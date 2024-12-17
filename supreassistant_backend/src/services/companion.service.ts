@@ -35,7 +35,7 @@ export class CompanionService {
   async getUserInfo(userId: string): Promise<string> {
     try{
       const events = await this.eventService.getUserEvents(userId);
-      // TODO: also get other user info
+      const notes = await this.noteService.getUserNotes(userId);
 
       const eventsInfo = events.map(event => ({
         title: event.title,
@@ -44,11 +44,14 @@ export class CompanionService {
         endTime: event.endTime,
         location: event.location
       }));
-      // TODO: also jsonfy other user info
+      const notesInfo = notes.map(note => ({
+        title: note.title,
+        content: note.content
+      }));
 
       return JSON.stringify({
         events: eventsInfo,
-        // TODO other user info
+        notes: notesInfo
       });
     } catch (error) {
       throw new DatabaseError('Error getting relevant user info');
@@ -71,7 +74,7 @@ export class CompanionService {
       // Format messages for OpenAI or Google LLM
       const messages = [
         { role: 'system', content: companion.systemPrompt },
-        {role: 'system', content: 'Remember that today\'s date is ' + new Date().toLocaleDateString()},
+        {role: 'system', content: 'Remember that today\'s date and time is ' + new Date().toLocaleString()},
         {role: 'system', content: userInfo},
         ...recentMessages.reverse().map(m => ({
           role: m.role,

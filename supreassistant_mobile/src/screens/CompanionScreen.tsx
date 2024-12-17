@@ -12,8 +12,15 @@ import {
 import { Message } from '../types';
 import { companionService } from '../services/companionService';
 import { colors, spacing, layout, typography } from '../themes';
+import { profileService } from '../services/profileService';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types';
 
-export const CompanionScreen = () => {
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Companion'>;
+};
+
+export const CompanionScreen = ({ navigation }: Props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const flatListRef = useRef<FlatList>(null);
@@ -35,6 +42,23 @@ export const CompanionScreen = () => {
   useEffect(() => {
     setTimeout(scrollToBottom, 100);
   }, [messages, contentHeight]);
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const userData = await profileService.getProfile();
+        if (userData?.user?.username) {
+          navigation.setOptions({
+            title: `${userData.user.username}'s Assistant`
+          });
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    };
+
+    loadUserProfile();
+  }, [navigation]);
 
   const loadMessages = async () => {
     try {

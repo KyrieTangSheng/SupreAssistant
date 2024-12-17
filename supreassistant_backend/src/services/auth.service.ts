@@ -12,7 +12,6 @@ export class AuthService {
         where: { 
           [Op.or]: [
             { email: userData.email },
-            { username: userData.username }
           ]
         } 
       });

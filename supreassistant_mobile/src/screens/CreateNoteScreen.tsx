@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -20,29 +20,55 @@ type Props = {
 export const CreateNoteScreen = ({ navigation }: Props) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [noteId, setNoteId] = useState<string | null>(null);
 
-  const handleCreateNote = async () => {
+  useEffect(() => {
+    if (!noteId) {
+      if (title.trim() && content.trim()) {
+        createNote();
+      }
+      return;
+    }
+
+    const saveTimeout = setTimeout(() => {
+      handleSave();
+    }, 500);
+
+    return () => clearTimeout(saveTimeout);
+  }, [title, content, noteId]);
+
+  const createNote = async () => {
     try {
-      const noteData = {
-        title,
-        content,
-      };
-
-      await noteService.createNote(noteData);
-      Alert.alert('Success', 'Note created successfully');
-      navigation.goBack();
+      const newNote = await noteService.createNote({
+        title: title.trim(),
+        content: content.trim(),
+      });
+      setNoteId(newNote.id);
     } catch (error) {
-      Alert.alert('Error', 'Failed to create note');
+      console.error('Error creating note:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!noteId || !title.trim() || !content.trim()) return;
+    
+    try {
+      await noteService.updateNote(noteId, {
+        title: title.trim(),
+        content: content.trim(),
+      });
+    } catch (error) {
+      console.error('Error saving note:', error);
     }
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerLabel}>Note Summary ✨</Text>
+        <Text style={styles.headerLabel}>New Note ✨</Text>
         <TextInput
           style={styles.titleInput}
-          placeholder="Give your note a title"
+          placeholder="Title (required)"
           placeholderTextColor={colors.input.placeholder}
           value={title}
           onChangeText={setTitle}
@@ -53,7 +79,7 @@ export const CreateNoteScreen = ({ navigation }: Props) => {
         <Text style={styles.sectionTitle}>📝 Content</Text>
         <TextInput
           style={styles.contentInput}
-          placeholder="Start writing your thoughts..."
+          placeholder="Write your note here (required)"
           placeholderTextColor={colors.input.placeholder}
           value={content}
           onChangeText={setContent}

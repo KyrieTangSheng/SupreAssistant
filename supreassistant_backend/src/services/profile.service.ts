@@ -41,7 +41,6 @@ export class ProfileService {
             id: { [Op.ne]: userId }, // Exclude current user
             [Op.or]: [
               ...(data.email ? [{ email: data.email }] : []),
-              ...(data.username ? [{ username: data.username }] : [])
             ]
           }
         });
@@ -49,9 +48,6 @@ export class ProfileService {
         if (existingUser) {
           if (data.email && existingUser.email === data.email) {
             throw new ValidationError('Email already in use');
-          }
-          if (data.username && existingUser.username === data.username) {
-            throw new ValidationError('Username already taken');
           }
         }
       }

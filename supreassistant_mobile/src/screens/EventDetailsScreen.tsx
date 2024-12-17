@@ -7,6 +7,9 @@ import {
   ScrollView,
   Alert,
   TouchableOpacity,
+  Modal,
+  Platform,
+  SafeAreaView,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -71,8 +74,10 @@ export const EventDetailsScreen = ({ navigation, route }: Props) => {
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
       });
+      Alert.alert('Success', 'Event updated successfully');
+      navigation.goBack();
     } catch (error) {
-      console.error('Error saving event:', error);
+      Alert.alert('Error', 'Failed to update event');
     }
   };
 
@@ -104,78 +109,128 @@ export const EventDetailsScreen = ({ navigation, route }: Props) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerLabel}>Event Summary ✨</Text>
-        <TextInput
-          style={styles.titleInput}
-          placeholder="Give your event a catchy title"
-          placeholderTextColor={colors.input.placeholder}
-          value={title}
-          onChangeText={setTitle}
-        />
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.timeSection}>
-          <Text style={styles.sectionTitle}>🗓 When</Text>
-          <TouchableOpacity 
-            style={styles.timeButton}
-            onPress={() => setShowStartPicker(true)}
-          >
-            <Text style={styles.timeLabel}>Starts</Text>
-            <Text style={styles.timeText}>{startTime.toLocaleString()}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.timeButton}
-            onPress={() => setShowEndPicker(true)}
-          >
-            <Text style={styles.timeLabel}>Ends</Text>
-            <Text style={styles.timeText}>{endTime.toLocaleString()}</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.locationSection}>
-          <Text style={styles.sectionTitle}>📍 Where</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerLabel}>Event Summary ✨</Text>
           <TextInput
-            style={styles.locationInput}
-            placeholder="Add location"
+            style={styles.titleInput}
+            placeholder="Give your event a catchy title"
             placeholderTextColor={colors.input.placeholder}
-            value={location}
-            onChangeText={setLocation}
+            value={title}
+            onChangeText={setTitle}
           />
         </View>
-      </View>
 
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>✨ Details</Text>
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder="What's this event about?"
-          placeholderTextColor={colors.input.placeholder}
-          value={description}
-          onChangeText={setDescription}
-          multiline
-        />
-      </View>
+        <View style={styles.card}>
+          <View style={styles.timeSection}>
+            <Text style={styles.sectionTitle}>🗓 When</Text>
+            <TouchableOpacity 
+              style={styles.timeButton}
+              onPress={() => setShowStartPicker(true)}
+            >
+              <Text style={styles.timeLabel}>Starts</Text>
+              <Text style={styles.timeText}>{startTime.toLocaleString()}</Text>
+            </TouchableOpacity>
 
-      {showStartPicker && (
-        <DateTimePicker
-          value={startTime}
-          mode="datetime"
-          onChange={onStartTimeChange}
-        />
+            <TouchableOpacity 
+              style={styles.timeButton}
+              onPress={() => setShowEndPicker(true)}
+            >
+              <Text style={styles.timeLabel}>Ends</Text>
+              <Text style={styles.timeText}>{endTime.toLocaleString()}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.locationSection}>
+            <Text style={styles.sectionTitle}>📍 Where</Text>
+            <TextInput
+              style={styles.locationInput}
+              placeholder="Add location"
+              placeholderTextColor={colors.input.placeholder}
+              value={location}
+              onChangeText={setLocation}
+            />
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>✨ Details</Text>
+          <TextInput
+            style={styles.descriptionInput}
+            placeholder="What's this event about?"
+            placeholderTextColor={colors.input.placeholder}
+            value={description}
+            onChangeText={setDescription}
+            multiline
+          />
+        </View>
+
+        {Platform.OS === 'android' && (
+          <>
+            {showStartPicker && (
+              <DateTimePicker
+                value={startTime}
+                mode="datetime"
+                onChange={onStartTimeChange}
+              />
+            )}
+            {showEndPicker && (
+              <DateTimePicker
+                value={endTime}
+                mode="datetime"
+                onChange={onEndTimeChange}
+                minimumDate={startTime}
+              />
+            )}
+          </>
+        )}
+      </ScrollView>
+
+      {Platform.OS === 'ios' && (showStartPicker || showEndPicker) && (
+        <Modal
+          visible={true}
+          transparent
+          animationType="fade"
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.pickerHeader}>
+                <Text style={styles.pickerTitle}>
+                  {showStartPicker ? 'Select Start Time' : 'Select End Time'}
+                </Text>
+                <TouchableOpacity 
+                  onPress={() => {
+                    setShowStartPicker(false);
+                    setShowEndPicker(false);
+                  }}
+                  style={styles.closeButton}
+                >
+                  <Text style={styles.closeButtonText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={showStartPicker ? startTime : endTime}
+                mode="datetime"
+                onChange={showStartPicker ? onStartTimeChange : onEndTimeChange}
+                minimumDate={showEndPicker ? startTime : undefined}
+                display="spinner"
+                style={styles.datePicker}
+              />
+            </View>
+          </View>
+        </Modal>
       )}
-      {showEndPicker && (
-        <DateTimePicker
-          value={endTime}
-          mode="datetime"
-          onChange={onEndTimeChange}
-          minimumDate={startTime}
-        />
-      )}
-    </ScrollView>
+      
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity 
+          style={styles.saveButton}
+          onPress={handleSave}
+        >
+          <Text style={styles.saveButtonText}>Save Changes</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -273,5 +328,61 @@ const styles = StyleSheet.create({
     height: spacing.xxl * 4,
     textAlignVertical: 'top',
     fontWeight: '400',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: colors.card,
+    borderRadius: spacing.lg,
+    padding: spacing.lg,
+    width: '90%',
+    maxWidth: 400,
+  },
+  pickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  pickerTitle: {
+    ...typography.headline,
+    color: colors.text.primary,
+    fontWeight: '600',
+  },
+  closeButton: {
+    padding: spacing.sm,
+  },
+  closeButtonText: {
+    ...typography.callout,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  datePicker: {
+    width: '100%',
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  bottomContainer: {
+    padding: spacing.lg,
+    backgroundColor: colors.background,
+    borderTopWidth: 1,
+    borderTopColor: colors.border.light,
+  },
+  saveButton: {
+    backgroundColor: colors.primary,
+    padding: spacing.md,
+    borderRadius: spacing.sm,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    ...typography.callout,
+    color: colors.text.inverse,
+    fontWeight: '600',
   },
 }); 
